@@ -1,1 +1,9 @@
-export default function Dashboard() { return <div className="text-white p-8">Dashboard</div> }
+import ProLayout from '../../components/ProLayout'
+
+export default function Dashboard() {
+  return (
+    <ProLayout title="Tableau de bord">
+      <div style={{ color: 'white' }}>Contenu du dashboard à venir...</div>
+    </ProLayout>
+  )
+}
