@@ -8,7 +8,7 @@ import { validerEmail, validerMotDePasse, validerCouleurHex } from '../../utils/
 
 export default function Register() {
   const [erreursMdp, setErreursMdp] = useState([])
-  const { login } = useAuth()
+  const { login, setPro } = useAuth()
   const navigate = useNavigate()
   const fileRef = useRef(null)
 
@@ -51,20 +51,17 @@ export default function Register() {
     setErreur('')
     setErreursMdp([])
 
-    // Validation email
     if (!validerEmail(form.email)) {
       setErreur("Format d'email invalide")
       return
     }
 
-    // Validation mot de passe
     const erreursPwd = validerMotDePasse(form.password)
     if (erreursPwd.length > 0) {
       setErreursMdp(erreursPwd)
       return
     }
 
-    // Validation couleur
     if (!validerCouleurHex(form.brand_color)) {
       setErreur('Couleur hex invalide — format attendu : #RRGGBB')
       return
@@ -72,21 +69,31 @@ export default function Register() {
 
     setChargement(true)
     try {
+      // 1. Inscription
       const res = await api.post('/auth/register', {
         ...form,
         reward_limit: parseInt(form.reward_limit),
       })
+
+      // 2. Sauvegarder les tokens
       login(res.data.access_token, res.data.refresh_token, res.data.pro)
 
+      // 3. Upload logo si fourni
       if (logo) {
         const formData = new FormData()
         formData.append('logo', logo)
         await api.post('/pro/logo', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         })
+
+        // 4. Recharger le profil avec le logo_url à jour
+        const proRes = await api.get('/pro/me')
+        setPro(proRes.data.pro)
       }
 
+      // 5. Redirection
       navigate('/dashboard')
+
     } catch (err) {
       setErreur(err.response?.data?.error || 'Erreur lors de la création du compte')
       setChargement(false)
