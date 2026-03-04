@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
 
+
 // Pages Pro
 import Login from './pages/pro/Login'
 import Register from './pages/pro/Register'
@@ -24,26 +25,28 @@ function PrivateRoute({ children }) {
 
 export default function App() {
   return (
-    <Routes>
-      {/* Auth */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+    <>
+      <Routes>
+        {/* Auth */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-      {/* Pro — protégé */}
-      <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-      <Route path="/dashboard/clients" element={<PrivateRoute><Clients /></PrivateRoute>} />
-      <Route path="/dashboard/scanner" element={<PrivateRoute><Scanner /></PrivateRoute>} />
-      <Route path="/dashboard/profil" element={<PrivateRoute><Profil /></PrivateRoute>} />
-      <Route path="/dashboard/abonnement" element={<PrivateRoute><Abonnement /></PrivateRoute>} />
-      <Route path="/dashboard/annonces" element={<PrivateRoute><Annonces /></PrivateRoute>} />
+        {/* Pro — protégé */}
+        <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+        <Route path="/dashboard/clients" element={<PrivateRoute><Clients /></PrivateRoute>} />
+        <Route path="/dashboard/scanner" element={<PrivateRoute><Scanner /></PrivateRoute>} />
+        <Route path="/dashboard/profil" element={<PrivateRoute><Profil /></PrivateRoute>} />
+        <Route path="/dashboard/abonnement" element={<PrivateRoute><Abonnement /></PrivateRoute>} />
+        <Route path="/dashboard/annonces" element={<PrivateRoute><Annonces /></PrivateRoute>} />
 
-      {/* Client — public */}
-      <Route path="/rejoindre/:slug" element={<Rejoindre />} />
-      <Route path="/carte/:serial" element={<CarteClient />} />
+        {/* Client — public */}
+        <Route path="/rejoindre/:slug" element={<Rejoindre />} />
+        <Route path="/carte/:serial" element={<CarteClient />} />
 
-      {/* Redirect */}
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="*" element={<Navigate to="/login" replace />} />
-    </Routes>
+        {/* Redirect */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </>
   )
 }
