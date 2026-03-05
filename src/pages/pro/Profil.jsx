@@ -62,6 +62,7 @@ export default function Profil() {
         await api.post('/pro/logo', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         })
+        await api.post('/wallet/sync-logo')
         const proRes = await api.get('/pro/me')
         setPro(proRes.data.pro)
       }
