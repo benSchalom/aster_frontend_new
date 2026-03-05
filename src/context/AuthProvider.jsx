@@ -33,10 +33,12 @@ useEffect(() => {
   return () => { cancelled = true }
 }, [])
 
-  const login = (accessToken, refreshToken, proData) => {
-    localStorage.setItem('access_token', accessToken)
-    localStorage.setItem('refresh_token', refreshToken)
-    setPro(proData)
+  const login = async (access_token, refresh_token) => {
+    localStorage.setItem('access_token', access_token)
+    localStorage.setItem('refresh_token', refresh_token)
+    // Recharger le profil complet depuis le serveur
+    const res = await api.get('/pro/me')
+    setPro(res.data.pro)
   }
 
   const logout = async () => {

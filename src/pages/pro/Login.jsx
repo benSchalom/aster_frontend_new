@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
-import api from '../../services/api'
 import { styles } from './Login.styles'
+import axios from 'axios'
+import { API_URL } from '../../utils/constants'
 
 export default function Login() {
   const { login } = useAuth()
@@ -14,20 +15,19 @@ export default function Login() {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
-    setErreur('')
+    
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setChargement(true)
+    setErreur('')
     try {
-      const res = await api.post('/auth/login', form)
+      const res = await axios.post(API_URL + '/auth/login', form)
       login(res.data.access_token, res.data.refresh_token, res.data.pro)
       navigate('/dashboard')
     } catch (err) {
-      setErreur(err.response?.data?.error || 'Erreur de connexion')
-      setChargement(false)
-    } finally {
+      setErreur(err.response?.data?.error || 'Identifiants incorrects')
       setChargement(false)
     }
   }

@@ -30,7 +30,7 @@ export default function Dashboard() {
           api.get('/pro/clients'),
           api.get('/pro/qrcode'),
         ])
-        setStats(statsRes.data)
+        setStats(statsRes.data.dashboard)
         setClients(clientsRes.data.clients?.slice(0, 5) || [])
         console.log('QR response:', qrRes.data)
         setQrCode(qrRes.data.qr_code)
