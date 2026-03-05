@@ -200,12 +200,50 @@ export default function Profil() {
           </form>
         </div>
 
-       {/* Mot de passe */}
+        {/* Mot de passe */}
         <div style={styles.card}>
           <div style={styles.cardTitle}>Changer le mot de passe</div>
-          <div style={{ fontSize: '18px', color: colors.textMuted }}>
-            Cette fonctionnalité sera disponible prochainement.
-          </div>
+          <form onSubmit={handleMdp} style={styles.form}>
+            <div style={styles.field}>
+              <label style={styles.label}>Mot de passe actuel</label>
+              <div style={styles.inputWrapper}>
+                <input
+                  type={showMdp ? 'text' : 'password'}
+                  value={mdp.ancien}
+                  onChange={(e) => setMdp({ ...mdp, ancien: e.target.value })}
+                  style={{ ...styles.input, paddingRight: '48px' }}
+                />
+                <button type="button" onClick={() => setShowMdp(!showMdp)} style={styles.eyeBtn}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    {showMdp
+                      ? <><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></>
+                      : <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></>
+                    }
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div style={styles.row}>
+              <div style={styles.field}>
+                <label style={styles.label}>Nouveau mot de passe</label>
+                <input type="password" value={mdp.nouveau}
+                  onChange={(e) => setMdp({ ...mdp, nouveau: e.target.value })}
+                  style={styles.input} />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Confirmer</label>
+                <input type="password" value={mdp.confirmer}
+                  onChange={(e) => setMdp({ ...mdp, confirmer: e.target.value })}
+                  style={styles.input} />
+              </div>
+            </div>
+
+            <button type="submit" disabled={envoi}
+              style={{ ...styles.btnPrimary, opacity: envoi ? 0.6 : 1 }}>
+              Changer le mot de passe
+            </button>
+          </form>
         </div>
 
         {/* Zone danger */}

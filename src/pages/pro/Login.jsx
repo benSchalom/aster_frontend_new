@@ -24,7 +24,7 @@ export default function Login() {
     setErreur('')
     try {
       const res = await axios.post(API_URL + '/auth/login', form)
-      login(res.data.access_token, res.data.refresh_token, res.data.pro)
+      await login(res.data.access_token, res.data.refresh_token, res.data.pro)
       navigate('/dashboard')
     } catch (err) {
       setErreur(err.response?.data?.error || 'Identifiants incorrects')
@@ -105,6 +105,12 @@ export default function Login() {
             >
               {chargement ? 'Connexion en cours...' : 'Se connecter'}
             </button>
+
+            <div style={{ textAlign: 'center', marginTop: '8px' }}>
+              <Link to="/forgot-password" style={{ ...styles.link, fontSize: '13px' }}>
+                Mot de passe oublié ?
+              </Link>
+            </div>
 
           </form>
         </div>

@@ -1,5 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
+import ForgotPassword from './pages/pro/ForgotPassword'
+import ResetPassword from './pages/pro/ResetPassword'
 
 
 // Pages Pro
@@ -27,6 +29,10 @@ export default function App() {
   return (
     <>
       <Routes>
+        {/* Mot de passe oublié */}
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+
         {/* Auth */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

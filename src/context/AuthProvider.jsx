@@ -39,6 +39,7 @@ useEffect(() => {
     // Recharger le profil complet depuis le serveur
     const res = await api.get('/pro/me')
     setPro(res.data.pro)
+    await new Promise(resolve => setTimeout(resolve, 50))
   }
 
   const logout = async () => {
