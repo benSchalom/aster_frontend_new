@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import api from '../../services/api'
 import { styles } from './CarteClient.styles'
+import { colors } from '../../utils/theme'
 
 const formatDate = (iso) => {
   if (!iso) return ''
@@ -16,6 +17,8 @@ const joursRestants = (iso) => {
 }
 
 export default function CarteClient() {
+  const [showInstallBanner, setShowInstallBanner] = useState(false)
+  const [deferredPrompt, setDeferredPrompt] = useState(null)
   const { serial } = useParams()
   const [carte, setCarte] = useState(null)
   const [walletUrl, setWalletUrl] = useState(null)
@@ -50,6 +53,35 @@ export default function CarteClient() {
     }
     charger()
   }, [serial])
+
+  useEffect(() => {
+    // Android/Chrome — prompt natif
+    const handler = (e) => {
+      e.preventDefault()
+      setDeferredPrompt(e)
+      setShowInstallBanner(true)
+    }
+    window.addEventListener('beforeinstallprompt', handler)
+
+    // iOS — guide manuel
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    const isStandalone = window.navigator.standalone === true
+    if (isIOS && !isStandalone) {
+      setShowInstallBanner(true)
+    }
+
+    return () => window.removeEventListener('beforeinstallprompt', handler)
+  }, [])
+
+  const handleInstall = async () => {
+    if (deferredPrompt) {
+      // Android — prompt natif
+      deferredPrompt.prompt()
+      await deferredPrompt.userChoice
+      setDeferredPrompt(null)
+      setShowInstallBanner(false)
+    }
+  }
 
   if (chargement) {
     return (
@@ -256,6 +288,52 @@ export default function CarteClient() {
             </svg>
             Ajouter à Google Wallet
           </a>
+        )}
+
+        {/* Banniere d'installation */}
+        {showInstallBanner && (
+          <div style={{
+            background: 'rgba(42,125,225,0.1)',
+            border: '1px solid rgba(42,125,225,0.2)',
+            borderRadius: '12px',
+            padding: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+          }}>
+            <div style={{ fontSize: '14px', fontWeight: '600', color: colors.text }}>
+              📲 Installer sur votre écran d'accueil
+            </div>
+            {deferredPrompt ? (
+              // Android
+              <div style={{ fontSize: '13px', color: colors.textMuted }}>
+                Accédez à votre carte rapidement depuis votre écran d'accueil.
+              </div>
+            ) : (
+              // iOS
+              <div style={{ fontSize: '13px', color: colors.textMuted, lineHeight: 1.5 }}>
+                Appuyez sur <strong style={{ color: colors.text }}>Partager</strong> puis{' '}
+                <strong style={{ color: colors.text }}>"Sur l'écran d'accueil"</strong>.
+              </div>
+            )}
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+              <button onClick={() => setShowInstallBanner(false)} style={{
+                background: 'none', border: 'none', color: colors.textMuted,
+                cursor: 'pointer', fontSize: '13px',
+              }}>
+                Fermer
+              </button>
+              {deferredPrompt && (
+                <button onClick={handleInstall} style={{
+                  background: colors.blue, border: 'none', color: 'white',
+                  cursor: 'pointer', fontSize: '13px', fontWeight: '600',
+                  padding: '6px 14px', borderRadius: '8px',
+                }}>
+                  Installer
+                </button>
+              )}
+            </div>
+          </div>
         )}
 
         {/* Historique */}

@@ -32,7 +32,6 @@ export default function Dashboard() {
         ])
         setStats(statsRes.data.dashboard)
         setClients(clientsRes.data.clients?.slice(0, 5) || [])
-        console.log('QR response:', qrRes.data)
         setQrCode(qrRes.data.qr_code)
       } catch (err) {
         console.error('Erreur chargement dashboard', err)

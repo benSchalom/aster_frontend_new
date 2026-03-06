@@ -2,8 +2,11 @@ import axios from 'axios'
 import { API_URL } from '../utils/constants'
 
 const api = axios.create({
-  baseURL: API_URL,
-  headers: { 'Content-Type': 'application/json' },
+  //baseURL: API_URL,
+  baseURL: import.meta.env.VITE_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 })
 
 // Injecter le token automatiquement
