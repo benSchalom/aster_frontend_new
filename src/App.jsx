@@ -28,6 +28,15 @@ function PrivateRoute({ children }) {
   return pro ? children : <Navigate to="/login" replace />
 }
 
+function HomeRedirect() {
+  const { pro } = useAuth()
+  const portailToken = localStorage.getItem('portail_token')
+  
+  if (portailToken) return <Navigate to="/mes-cartes/cartes" replace />
+  if (pro) return <Navigate to="/dashboard" replace />
+  return <Navigate to="/login" replace />
+}
+
 export default function App() {
   return (
     <>
@@ -56,7 +65,7 @@ export default function App() {
         <Route path="/mes-cartes/cartes" element={<MesCartes />} />
 
         {/* Redirect */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<HomeRedirect />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </>
