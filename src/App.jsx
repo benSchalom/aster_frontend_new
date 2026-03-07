@@ -17,6 +17,9 @@ import Annonces from './pages/pro/Annonces'
 // Pages Client
 import Rejoindre from './pages/client/Rejoindre'
 import CarteClient from './pages/client/CarteClient'
+import Portail from './pages/client/Portail'
+import PortailVerify from './pages/client/PortailVerify'
+import MesCartes from './pages/client/MesCartes'
 
 // Route protégée
 function PrivateRoute({ children }) {
@@ -48,6 +51,9 @@ export default function App() {
         {/* Client — public */}
         <Route path="/rejoindre/:slug" element={<Rejoindre />} />
         <Route path="/carte/:serial" element={<CarteClient />} />
+        <Route path="/mes-cartes" element={<Portail />} />
+        <Route path="/mes-cartes/verify" element={<PortailVerify />} />
+        <Route path="/mes-cartes/cartes" element={<MesCartes />} />
 
         {/* Redirect */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
