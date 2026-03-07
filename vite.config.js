@@ -9,7 +9,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'web-app-manifest-192x192.png', 'web-app-manifest-512x512.png'],
+      includeAssets: ['web-app-manifest-192x192.png', 'web-app-manifest-512x512.png'],
       manifest: {
         name: 'ASTER — Cartes Fidélité',
         short_name: 'ASTER',
@@ -21,25 +21,14 @@ export default defineConfig({
         scope: '/',
         start_url: '/',
         icons: [
-          {
-            src: 'web-app-manifest-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any maskable',
-          },
-          {
-            src: 'web-app-manifest-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable',
-          },
+          { src: 'web-app-manifest-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'web-app-manifest-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'web-app-manifest-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
       workbox: {
-        workbox: {
-          maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3 MB
-        },
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+        globPatterns: ['**/*.{js,css,html,ico,png,woff2}'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/api\./,
