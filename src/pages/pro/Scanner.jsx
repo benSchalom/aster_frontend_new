@@ -108,7 +108,7 @@ export default function Scanner() {
       <div style={styles.container}>
 
         {/* Zone caméra */}
-        <div style={styles.scannerBox}>
+        <div style={{...styles.scannerBox, minHeight: scanning ? 'auto' : '300px' }}>
           <video
             ref={videoRef}
             style={{
