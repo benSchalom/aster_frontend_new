@@ -307,7 +307,7 @@ export default function Scanner() {
               placeholder="ASTER-1-1-abc123"
               style={styles.input}
             />
-            <button type="submit" style={styles.btnPrimary}>
+            <button type="submit" style={{ ...styles.btnPrimary, width: '100%' }}>
               Scanner
             </button>
           </form>

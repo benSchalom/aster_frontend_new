@@ -154,6 +154,7 @@ export const styles = {
   },
   manualRow: {
     display: 'flex',
+    flexDirection: window.innerWidth < 480 ? 'column' : 'row',
     gap: spacing.md,
   },
   input: {
