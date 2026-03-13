@@ -28,6 +28,15 @@ export default function Scanner() {
   const demarrerScan = async () => {
     setErreur('')
     setResultat(null)
+
+    // Demander permission caméra explicitement d'abord
+    try {
+      await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+    } catch (err) {
+      setErreur('Permission caméra refusée. Allez dans les paramètres du navigateur pour l\'autoriser.')
+      return
+    }
+
     try {
       html5QrRef.current = new Html5Qrcode('scanner-qr')
       await html5QrRef.current.start(
