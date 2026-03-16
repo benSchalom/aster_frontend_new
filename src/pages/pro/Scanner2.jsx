@@ -13,21 +13,22 @@ export default function Scanner() {
   const [erreur, setErreur] = useState('')
   const [serialManuel, setSerialManuel] = useState('')
   const [chargement, setChargement] = useState(false)
-  const scannerRef = useRef(null)
-  const html5QrRef = useRef(null)
+  const videoRef = useRef(null)
+  const readerRef = useRef(null)
+  const controlsRef = useRef(null)
 
   useEffect(() => {
-    return () => {
-      if (html5QrRef.current) {
-        html5QrRef.current.stop().catch(() => {})
-      }
-    }
+    return () => { arreterScan() }
   }, [])
+
+  const scannerRef = useRef(null)
+  const html5QrRef = useRef(null)  
 
   const demarrerScan = async () => {
     setErreur('')
     setResultat(null)
 
+    // Permission explicite d'abord
     try {
       await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
     } catch {
@@ -49,12 +50,12 @@ export default function Scanner() {
     }
   }
 
-  const arreterScan = async () => {
-    if (html5QrRef.current) {
-      try { await html5QrRef.current.stop() } catch {}
-    }
-    setScanning(false)
+const arreterScan = async () => {
+  if (html5QrRef.current) {
+    try { await html5QrRef.current.stop() } catch {}
   }
+  setScanning(false)
+}
 
   const traiterScan = async (serial) => {
     setChargement(true)
@@ -104,8 +105,15 @@ export default function Scanner() {
       <div style={styles.container}>
 
         {/* Zone caméra */}
-        <div style={{ ...styles.scannerBox, minHeight: scanning ? 'auto' : '300px' }}>
+        <div style={{...styles.scannerBox, minHeight: scanning ? 'auto' : '300px'}}>
           <div id="scanner-qr" ref={scannerRef} style={styles.scannerInner} />
+          {!scanning && (
+            <div style={styles.scannerOverlay}>
+              ...bouton demarrerScan...
+            </div>
+          )}
+        </div>
+
           {!scanning && (
             <div style={styles.scannerOverlay}>
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7A92B4" strokeWidth="1.5">
@@ -132,12 +140,14 @@ export default function Scanner() {
           </div>
         )}
 
+        {/* Chargement */}
         {chargement && (
           <div style={{ textAlign: 'center', color: colors.textMuted, padding: '20px' }}>
             Traitement en cours...
           </div>
         )}
 
+        {/* Résultat */}
         {resultat && !chargement && (
           <div style={styles.resultCard(resultat.success ? 'success' : 'error')}>
             <div style={styles.resultHeader}>
