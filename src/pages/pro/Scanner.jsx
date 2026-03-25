@@ -15,6 +15,7 @@ export default function Scanner() {
   const [chargement, setChargement] = useState(false)
   const scannerRef = useRef(null)
   const html5QrRef = useRef(null)
+  const fileInputRef = useRef(null)
 
   useEffect(() => {
     return () => {
@@ -69,6 +70,25 @@ export default function Scanner() {
     } catch (err) {
       setErreur('Erreur caméra : ' + (err?.message || err?.toString() || 'inconnue'))
       setScanning(false)
+    }
+  }
+
+  const scannerPhoto = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    // Reset pour permettre de resélectionner le même fichier
+    e.target.value = ''
+    setErreur('')
+    setResultat(null)
+    setChargement(true)
+    try {
+      const scanner = new Html5Qrcode('scanner-photo-tmp')
+      const result = await scanner.scanFile(file, false)
+      await scanner.clear()
+      traiterScan(result)
+    } catch {
+      setErreur('Aucun QR code trouvé dans la photo. Réessayez en cadrant bien le code.')
+      setChargement(false)
     }
   }
 
@@ -141,8 +161,24 @@ export default function Scanner() {
                 Pointez la caméra vers le QR code de la carte client
               </p>
               <button onClick={demarrerScan} style={styles.btnPrimary}>
-                Démarrer le scan
+                📷 Scanner (caméra live)
               </button>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                style={{ ...styles.btnPrimary, background: 'rgba(91,163,245,0.12)', border: '1px solid rgba(91,163,245,0.25)', marginTop: '8px' }}
+              >
+                🖼️ Prendre une photo du QR code
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                style={{ display: 'none' }}
+                onChange={scannerPhoto}
+              />
+              {/* Élément temporaire nécessaire pour html5-qrcode scanFile */}
+              <div id="scanner-photo-tmp" style={{ display: 'none' }} />
             </div>
           )}
         </div>
