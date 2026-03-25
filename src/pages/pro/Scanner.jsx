@@ -67,7 +67,7 @@ export default function Scanner() {
         () => { }
       )
     } catch (err) {
-      setErreur('Impossible d\'accéder à la caméra. Vérifiez les permissions.')
+      setErreur('Erreur caméra : ' + (err?.message || err?.toString() || 'inconnue'))
       setScanning(false)
     }
   }
@@ -152,6 +152,21 @@ export default function Scanner() {
             <button onClick={arreterScan} style={styles.btnDanger}>
               Arrêter le scan
             </button>
+          </div>
+        )}
+
+        {erreur && (
+          <div style={{
+            background: 'rgba(244,98,42,0.1)',
+            border: '1px solid rgba(244,98,42,0.3)',
+            borderRadius: '12px',
+            padding: '14px 16px',
+            color: '#FF8A5B',
+            fontSize: '14px',
+            lineHeight: '1.5',
+            marginTop: '8px',
+          }}>
+            ⚠️ {erreur}
           </div>
         )}
 
