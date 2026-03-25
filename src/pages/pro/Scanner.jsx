@@ -19,7 +19,7 @@ export default function Scanner() {
   useEffect(() => {
     return () => {
       if (html5QrRef.current) {
-        html5QrRef.current.stop().catch(() => {})
+        html5QrRef.current.stop().catch(() => { })
       }
     }
   }, [])
@@ -27,6 +27,11 @@ export default function Scanner() {
   const demarrerScan = async () => {
     setErreur('')
     setResultat(null)
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setErreur('La caméra n\'est pas accessible. Assurez-vous que l\'application est ouverte en HTTPS (pas HTTP) sur votre téléphone.')
+      return
+    }
 
     try {
       await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
@@ -47,7 +52,7 @@ export default function Scanner() {
         { facingMode: 'environment' },
         { fps: 10, qrbox: { width: 250, height: 250 } },
         (decodedText) => { arreterScan(); traiterScan(decodedText) },
-        () => {}
+        () => { }
       )
     } catch (err) {
       setErreur('Impossible d\'accéder à la caméra. Vérifiez les permissions.')
@@ -57,7 +62,7 @@ export default function Scanner() {
 
   const arreterScan = async () => {
     if (html5QrRef.current) {
-      try { await html5QrRef.current.stop() } catch {}
+      try { await html5QrRef.current.stop() } catch { }
     }
     setScanning(false)
   }
@@ -115,10 +120,10 @@ export default function Scanner() {
           {!scanning && (
             <div style={styles.scannerOverlay}>
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7A92B4" strokeWidth="1.5">
-                <polyline points="23 6 23 1 18 1"/><line x1="23" y1="1" x2="14" y2="10"/>
-                <polyline points="1 6 1 1 6 1"/><line x1="1" y1="1" x2="10" y2="10"/>
-                <polyline points="23 18 23 23 18 23"/><line x1="23" y1="23" x2="14" y2="14"/>
-                <polyline points="1 18 1 23 6 23"/><line x1="1" y1="23" x2="10" y2="14"/>
+                <polyline points="23 6 23 1 18 1" /><line x1="23" y1="1" x2="14" y2="10" />
+                <polyline points="1 6 1 1 6 1" /><line x1="1" y1="1" x2="10" y2="10" />
+                <polyline points="23 18 23 23 18 23" /><line x1="23" y1="23" x2="14" y2="14" />
+                <polyline points="1 18 1 23 6 23" /><line x1="1" y1="23" x2="10" y2="14" />
               </svg>
               <p style={styles.scannerOverlayText}>
                 Pointez la caméra vers le QR code de la carte client
@@ -150,11 +155,11 @@ export default function Scanner() {
               <div style={styles.resultIcon(resultat.success ? 'success' : 'error')}>
                 {resultat.success ? (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#14C87A" strokeWidth="2.5">
-                    <polyline points="20 6 9 17 4 12"/>
+                    <polyline points="20 6 9 17 4 12" />
                   </svg>
                 ) : (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F4622A" strokeWidth="2.5">
-                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                   </svg>
                 )}
               </div>
