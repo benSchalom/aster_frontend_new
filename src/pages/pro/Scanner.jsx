@@ -35,6 +35,12 @@ export default function Scanner() {
       return
     }
 
+    // Afficher le scanner AVANT d'initialiser html5-qrcode
+    setScanning(true)
+
+    // Attendre que le DOM soit rendu
+    await new Promise(resolve => setTimeout(resolve, 300))
+
     try {
       html5QrRef.current = new Html5Qrcode('scanner-qr')
       await html5QrRef.current.start(
@@ -43,9 +49,9 @@ export default function Scanner() {
         (decodedText) => { arreterScan(); traiterScan(decodedText) },
         () => {}
       )
-      setScanning(true)
-    } catch {
+    } catch (err) {
       setErreur('Impossible d\'accéder à la caméra. Vérifiez les permissions.')
+      setScanning(false)
     }
   }
 
