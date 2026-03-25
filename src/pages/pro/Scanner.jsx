@@ -29,27 +29,39 @@ export default function Scanner() {
     setResultat(null)
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      setErreur('La caméra n\'est pas accessible. Assurez-vous que l\'application est ouverte en HTTPS (pas HTTP) sur votre téléphone.')
+      setErreur('La caméra n\'est pas accessible. Assurez-vous que l\'application est ouverte en HTTPS.')
       return
     }
 
+    // getCameras() déclenche proprement la demande de permission sur mobile (iOS & Android)
+    let cameras = []
     try {
-      await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      cameras = await Html5Qrcode.getCameras()
     } catch {
       setErreur('Permission caméra refusée. Autorisez la caméra dans les paramètres du navigateur.')
       return
     }
 
-    // Afficher le scanner AVANT d'initialiser html5-qrcode
-    setScanning(true)
+    if (!cameras || cameras.length === 0) {
+      setErreur('Aucune caméra détectée sur cet appareil.')
+      return
+    }
 
-    // Attendre que le DOM soit rendu
+    // Préférer la caméra arrière
+    const backCamera = cameras.find(c =>
+      c.label.toLowerCase().includes('back') ||
+      c.label.toLowerCase().includes('rear') ||
+      c.label.toLowerCase().includes('environment')
+    )
+    const cameraId = backCamera ? backCamera.id : cameras[cameras.length - 1].id
+
+    setScanning(true)
     await new Promise(resolve => setTimeout(resolve, 300))
 
     try {
       html5QrRef.current = new Html5Qrcode('scanner-qr')
       await html5QrRef.current.start(
-        { facingMode: 'environment' },
+        cameraId,
         { fps: 10, qrbox: { width: 250, height: 250 } },
         (decodedText) => { arreterScan(); traiterScan(decodedText) },
         () => { }
