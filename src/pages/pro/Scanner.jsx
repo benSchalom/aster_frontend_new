@@ -34,42 +34,31 @@ export default function Scanner() {
       return
     }
 
-    // getCameras() déclenche proprement la demande de permission sur mobile (iOS & Android)
-    let cameras = []
-    try {
-      cameras = await Html5Qrcode.getCameras()
-    } catch {
-      setErreur('Permission caméra refusée. Autorisez la caméra dans les paramètres du navigateur.')
-      return
-    }
-
-    if (!cameras || cameras.length === 0) {
-      setErreur('Aucune caméra détectée sur cet appareil.')
-      return
-    }
-
-    // Préférer la caméra arrière
-    const backCamera = cameras.find(c =>
-      c.label.toLowerCase().includes('back') ||
-      c.label.toLowerCase().includes('rear') ||
-      c.label.toLowerCase().includes('environment')
-    )
-    const cameraId = backCamera ? backCamera.id : cameras[cameras.length - 1].id
-
     setScanning(true)
     await new Promise(resolve => setTimeout(resolve, 300))
 
     try {
       html5QrRef.current = new Html5Qrcode('scanner-qr')
+      // facingMode déclenche directement getUserMedia → popup permission sur iOS et Android
       await html5QrRef.current.start(
-        cameraId,
+        { facingMode: { ideal: 'environment' } },
         { fps: 10, qrbox: { width: 250, height: 250 } },
         (decodedText) => { arreterScan(); traiterScan(decodedText) },
         () => { }
       )
     } catch (err) {
-      setErreur('Erreur caméra : ' + (err?.message || err?.toString() || 'inconnue'))
       setScanning(false)
+      const msg = err?.message || err?.toString() || ''
+      if (msg.toLowerCase().includes('permission') || msg.toLowerCase().includes('denied') || msg.toLowerCase().includes('notallowed')) {
+        setErreur(
+          'Caméra bloquée. Pour débloquer :\n' +
+          '1. Appuyez sur 🔒 à gauche de l\'URL\n' +
+          '2. Autorisations → Caméra → Autoriser\n' +
+          '3. Rechargez la page et réessayez.'
+        )
+      } else {
+        setErreur('Erreur caméra : ' + (msg || 'inconnue'))
+      }
     }
   }
 
