@@ -40,8 +40,12 @@ export default function Rejoindre() {
     }
     setEnvoi(true)
     try {
-      const res = await api.post('/carte/creer', { slug, ...form })
-      navigate('/carte/' + res.data.carte.serial_number)
+      await api.post('/carte/creer', { slug, ...form })
+      const portailUrl = import.meta.env.VITE_PORTAIL_URL || 'https://aster-client.vercel.app'
+      const tel = form.phone.replace(/\D/g, '')
+      window.location.href = tel
+        ? `${portailUrl}/connexion?tel=${tel}`
+        : `${portailUrl}/connexion`
     } catch (err) {
       setErreur(err.response?.data?.error || 'Erreur lors de la création de la carte')
       setEnvoi(false)
