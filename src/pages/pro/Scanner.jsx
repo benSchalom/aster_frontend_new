@@ -51,10 +51,12 @@ export default function Scanner() {
       const msg = err?.message || err?.toString() || ''
       if (msg.toLowerCase().includes('permission') || msg.toLowerCase().includes('denied') || msg.toLowerCase().includes('notallowed')) {
         setErreur(
-          'Caméra bloquée. Pour débloquer :\n' +
-          '1. Appuyez sur 🔒 à gauche de l\'URL\n' +
-          '2. Autorisations → Caméra → Autoriser\n' +
-          '3. Rechargez la page et réessayez.'
+          'Caméra bloquée par le navigateur.\n\n' +
+          'Dans Chrome Android :\n' +
+          '1. Appuyez sur ⋮ (3 points en haut à droite)\n' +
+          '2. "Paramètres du site" → Caméra → Autoriser\n' +
+          '3. Revenez ici et réessayez.\n\n' +
+          'Si l\'app est installée, faites cette manipulation dans Chrome (navigateur), pas dans l\'app.'
         )
       } else {
         setErreur('Erreur caméra : ' + (msg || 'inconnue'))
