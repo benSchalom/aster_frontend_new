@@ -41,7 +41,7 @@ export default function Scanner() {
       html5QrRef.current = new Html5Qrcode('scanner-qr')
       // facingMode déclenche directement getUserMedia → popup permission sur iOS et Android
       await html5QrRef.current.start(
-        { facingMode: { ideal: 'environment' } },
+        { facingMode: 'environment' },
         { fps: 10, qrbox: { width: 250, height: 250 } },
         (decodedText) => { arreterScan(); traiterScan(decodedText) },
         () => { }
